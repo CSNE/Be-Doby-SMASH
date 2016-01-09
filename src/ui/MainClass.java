@@ -346,7 +346,6 @@ public class MainClass extends JFrame implements ActionListener{
 		component.paint( image.getGraphics() ); // alternately use .printAll(..)
 		return image;
 	}
-
 	public void savePNG(BufferedImage bi, File file){
 		File outputfile = file;
 		try {
@@ -367,17 +366,62 @@ public class MainClass extends JFrame implements ActionListener{
 		}
 	}
 
-	public static void saveMP4(int framerate) throws IOException, InterruptedException {
+	public void saveMP4(File file, int framerate) throws IOException, InterruptedException {
 
 		String ffmpeg="\""+System.getProperty("user.dir")+"/media/ffmpeg"+"\"";
 		String images="\""+System.getProperty("user.dir")+"/media/renders/%04d.png"+"\"";
-		String out="\""+System.getProperty("user.dir")+"/media/output.mp4"+"\"";
+		String out=file.getAbsolutePath();
 		String command="cmd /c start \"Movie Export (ffmpeg)\" "+ffmpeg+" -framerate "+framerate+" -i "+images+" -c:v libx264 -pix_fmt yuv420p "+out;
 		//String command="ping www.google.com";
 		//String command=ffmpeg+" -h";
 
 		System.out.println(command);
 		Runtime.getRuntime().exec(command);
+	}
+
+	public void exportImage(){
+		JFileChooser fileChooser = new JFileChooser();
+		fileChooser.setCurrentDirectory(new File("media/exported/"));
+		fileChooser.setSelectedFile(new File("Untitled.png"));
+		fileChooser.setDialogTitle("Export PNG Screenshot");
+		fileChooser.setApproveButtonText("Export");
+		int result = fileChooser.showSaveDialog(this);
+		if (result == JFileChooser.APPROVE_OPTION) {
+			File selectedFile = fileChooser.getSelectedFile();
+			String file_name = selectedFile.toString();
+
+			if (!file_name.endsWith(".png")) file_name += ".png";
+			selectedFile = new File(file_name);
+
+			System.out.println("Selected file: " + selectedFile.getAbsolutePath());
+
+			savePNG(getScreenShot(vp),selectedFile);
+		}
+	}
+
+	public void exportMovie(){
+		JFileChooser fileChooser = new JFileChooser();
+		fileChooser.setCurrentDirectory(new File("media/exported/"));
+		fileChooser.setSelectedFile(new File("Untitled.mp4"));
+		fileChooser.setDialogTitle("Export MP4 Movie");
+		fileChooser.setApproveButtonText("Export");
+		int result = fileChooser.showSaveDialog(this);
+		if (result == JFileChooser.APPROVE_OPTION) {
+			File selectedFile = fileChooser.getSelectedFile();
+			String file_name = selectedFile.toString();
+
+			if (!file_name.endsWith(".mp4")) file_name += ".mp4";
+			selectedFile = new File(file_name);
+
+			System.out.println("Selected file: " + selectedFile.getAbsolutePath());
+
+			try {
+				savePNGSequence(tm.getAnimationLength(),30);
+				saveMP4(selectedFile,30);
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			}
+		}
 	}
 
 	
@@ -397,7 +441,7 @@ public class MainClass extends JFrame implements ActionListener{
 				File selectedFile = fileChooser.getSelectedFile();
 				String file_name = selectedFile.toString();
 
-				if (!file_name.endsWith(".sapx"))
+				if (!file_name.endsWith(".sma"))
 					file_name += ".sma";
 				selectedFile = new File(file_name);
 
@@ -419,8 +463,7 @@ public class MainClass extends JFrame implements ActionListener{
 				File selectedFile = fileChooser.getSelectedFile();
 				String file_name = selectedFile.toString();
 
-				if (!file_name.endsWith(".sma"))
-					file_name += ".sma";
+				if (!file_name.endsWith(".sma")) file_name += ".sma";
 				selectedFile = new File(file_name);
 
 				System.out.println("Selected file: " + selectedFile.getAbsolutePath());
@@ -458,16 +501,11 @@ public class MainClass extends JFrame implements ActionListener{
 
 		}
 		else if (e.getSource().equals(menu_File[4])){
-			savePNG(getScreenShot(vp),new File("media/test.png"));
+			exportImage();
 
 		}
 		else if (e.getSource().equals(menu_File[5])){
-			try {
-				savePNGSequence(5,30);
-				saveMP4(30);
-			} catch (Exception e1) {
-				e1.printStackTrace();
-			}
+			exportMovie();
 		}
 		else if (e.getSource().equals(menu_Animation[2])){
 			String s = (String)JOptionPane.showInputDialog(

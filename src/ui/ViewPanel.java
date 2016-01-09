@@ -97,6 +97,7 @@ public class ViewPanel extends JPanel implements MouseMotionListener, MouseListe
 		g2d.setColor(new Color(255,255,255));
 		
 		currentFPS=Math.round(10*1.0/(System.nanoTime()-lastDrawn)*1000000000L)/10.0;
+
 		while (currentFPS>maxFPS){
 			currentFPS=Math.round(10*1.0/(System.nanoTime()-lastDrawn)*1000000000L)/10.0;
 			try {
