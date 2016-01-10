@@ -164,12 +164,20 @@ public class ObjectsManager implements OnTimeUpdateListener,Serializable{
         ffTarget = createShape();
     }
 
-    public void exitFreeForm() {
-        mode = NORMAL_EDITING;
-        ffTarget.centerVertices();
-        ffTarget.select();
-        notifyOnObjectSelectedListeners(ffTarget);
-        ffTarget = null;
+    public boolean exitFreeForm() {
+        mode = NOTHING_SELECTED;
+        if (ffTarget.getNumPoints()<3) {
+            shapes.remove(ffTarget);
+            ffTarget = null;
+            return false;
+        }else {
+            ffTarget.centerVertices();
+            ffTarget.select();
+            notifyOnObjectSelectedListeners(ffTarget);
+            ffTarget = null;
+            return true;
+        }
+
     }
 
     public TransformableShape getFfTarget() {

@@ -43,6 +43,9 @@ public class TransformableShape extends Transformable implements Serializable{
 		points.add(new Point2D.Double((-x/2),(y/2)));
 
 	}
+	public int getNumPoints(){
+		return points.size();
+	}
 
 	public void makePolygon(int points, double rad){
 		this.points.clear();

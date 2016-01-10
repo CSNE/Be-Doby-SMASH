@@ -663,8 +663,9 @@ public class ObjectPanel extends JPanel implements OnObjectSelectedListener, OnT
 
 		}else if (e.getSource()==ff_done){
 			if (om.getMode()==ObjectsManager.FREE_FORM_EDITING){
-			om.exitFreeForm();
-			layout.show(this,SELECTED);
+				if (om.exitFreeForm()) layout.show(this,SELECTED); //Successful object creation
+				else layout.show(this,NOT_SELECTED); //Failed object creation
+
 			}else{
 				System.out.println("INVALID MODE");
 			}
