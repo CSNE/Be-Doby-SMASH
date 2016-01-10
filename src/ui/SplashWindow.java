@@ -1,8 +1,5 @@
 package ui;
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.Frame;
-import java.awt.Toolkit;
+import java.awt.*;
 
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
@@ -15,6 +12,9 @@ public class SplashWindow extends JWindow
 	{
 		super(f);
 		JLabel l = new JLabel(new ImageIcon(filename));
+		//l.setOpaque(false);
+		//l.setBackground(new Color(0,0,0,0));
+		setBackground(new Color(0,0,0,0));
 		getContentPane().add(l, BorderLayout.CENTER);
 		pack();
 		Dimension screenSize =

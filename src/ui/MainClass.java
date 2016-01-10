@@ -38,7 +38,7 @@ import shapes.TransformableShape;
 
 public class MainClass extends JFrame implements ActionListener{
 
-	boolean hideSplash=true;
+	boolean hideSplash=false;
 
 	ViewPanel vp;
 	JLayeredPane lp;
@@ -81,6 +81,8 @@ public class MainClass extends JFrame implements ActionListener{
 
 	public MainClass(){
 
+
+
 		//We get the screen size.
 		Dimension screenSize =Toolkit.getDefaultToolkit().getScreenSize();
 		screenX=screenSize.width;
@@ -88,10 +90,10 @@ public class MainClass extends JFrame implements ActionListener{
 
 		//We set the random time for the loading splash.
 		Random rGen=new Random();
-		int loadTime=rGen.nextInt(2000);
+		int loadTime=rGen.nextInt(1000);
 		System.out.println("LoadTime: "+loadTime);
 
-		if (!hideSplash) new SplashWindow("media/splash/ADobySmash_Splash_r5_mb.gif",6500+loadTime,this);
+		if (!hideSplash) new SplashWindow("media/splash/splash_r3.png",1000+loadTime,this);
 
 
 		logoImage = new ImageIcon("media/logo/new_r1_256px.png");
@@ -356,6 +358,9 @@ public class MainClass extends JFrame implements ActionListener{
 	}
 
 	public void savePNGSequence(double end, double framerate){
+		//TODO Render files cleaning
+		//for(File file: new File("media/renders").listFiles()) file.delete();
+
 		om.deselectAll();
 		String frameIdentifier;
 		for (int i = 0; i*(1/framerate) <= end; i++) {
@@ -394,8 +399,9 @@ public class MainClass extends JFrame implements ActionListener{
 			selectedFile = new File(file_name);
 
 			System.out.println("Selected file: " + selectedFile.getAbsolutePath());
-
+			vp.enterRenderMode();
 			savePNG(getScreenShot(vp),selectedFile);
+			vp.exitRenderMode();
 		}
 	}
 
@@ -416,7 +422,10 @@ public class MainClass extends JFrame implements ActionListener{
 			System.out.println("Selected file: " + selectedFile.getAbsolutePath());
 
 			try {
+				JOptionPane.showMessageDialog(null, "This may take a while.");
+				vp.enterRenderMode();
 				savePNGSequence(tm.getAnimationLength(),30);
+				vp.exitRenderMode();
 				saveMP4(selectedFile,30);
 			} catch (Exception e1) {
 				e1.printStackTrace();

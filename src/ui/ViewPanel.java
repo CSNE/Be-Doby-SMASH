@@ -26,6 +26,7 @@ public class ViewPanel extends JPanel implements MouseMotionListener, MouseListe
 	private ObjectsManager om;
 	int offsetX=0,offsetY=0;
 	double maxFPS=120.0, currentFPS;
+	boolean renderMode=false;
 	TimeManager tm;
 	
 	public ViewPanel(ObjectsManager om, TimeManager tm){
@@ -38,7 +39,8 @@ public class ViewPanel extends JPanel implements MouseMotionListener, MouseListe
 		addKeyListener(this);
 	}
 	
-	
+	public void enterRenderMode(){this.renderMode=true;}
+	public void exitRenderMode(){this.renderMode=false;}
 
 	public void paintComponent(Graphics g){
 
@@ -89,27 +91,30 @@ public class ViewPanel extends JPanel implements MouseMotionListener, MouseListe
 			om.getFfTarget().drawStroke(g2d,offsetX,offsetY);
 			om.getFfTarget().fillVertexHandles(g2d,offsetX,offsetY);
 		}
+
+
+
 		
 		setBackground(om.getCanvasColor());
+		if (!renderMode) {
+			//FPS counter
+			g2d.setFont(new Font("Arial", Font.PLAIN, 10));
+			g2d.setColor(new Color(255, 255, 255));
 
-		//FPS counter
-		g2d.setFont(new Font("Arial", Font.PLAIN, 10));
-		g2d.setColor(new Color(255,255,255));
-		
-		currentFPS=Math.round(10*1.0/(System.nanoTime()-lastDrawn)*1000000000L)/10.0;
+			currentFPS = Math.round(10 * 1.0 / (System.nanoTime() - lastDrawn) * 1000000000L) / 10.0;
 
-		while (currentFPS>maxFPS){
-			currentFPS=Math.round(10*1.0/(System.nanoTime()-lastDrawn)*1000000000L)/10.0;
-			try {
-				Thread.sleep(1); //TODO this is not the most elegant solution.
-			} catch (InterruptedException e) {
-				e.printStackTrace();
+			while (currentFPS > maxFPS) {
+				currentFPS = Math.round(10 * 1.0 / (System.nanoTime() - lastDrawn) * 1000000000L) / 10.0;
+				try {
+					Thread.sleep(1); //TODO this is not the most elegant solution.
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
 			}
+			g2d.drawString(currentFPS + " fps", 5, 15);
+
+
 		}
-		g2d.drawString(currentFPS+" fps", 5, 15);
-
-		//System.out.println(Double.toString(1.0/(System.nanoTime()-lastDrawn)*1000000000L));
-
 		lastDrawn=System.nanoTime();
 		
 		repaint();
