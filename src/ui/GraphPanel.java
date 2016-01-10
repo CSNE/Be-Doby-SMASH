@@ -27,6 +27,7 @@ public class GraphPanel extends JPanel implements OnObjectSelectedListener, OnOb
     public static final int ROTATION=8582;
 
     private TimeManager tm;
+    private ObjectsManager om;
 
 
     private Color backgroundColor = new Color(0, 0, 0, 192);
@@ -51,9 +52,10 @@ public class GraphPanel extends JPanel implements OnObjectSelectedListener, OnOb
     InterpolatableProperty targetProperty;
 
 
-    public GraphPanel(TimeManager tm) {
+    public GraphPanel(TimeManager tm, ObjectsManager om) {
         graphTransformer=new GraphTransformer();
         this.tm=tm;
+        this.om=om;
         setOpaque(false);
 
     }
@@ -141,15 +143,15 @@ public class GraphPanel extends JPanel implements OnObjectSelectedListener, OnOb
 
                 //Curve itself
                 g2d.setColor(Color.RED);
-                g2d.draw(CurveGenerator.generate(graphTransformer.fromGraphSpaceToDrawSpace(targetProperty.getKeyframeValueCurve().getSegments())));
+                g2d.draw(CurveGenerator.generatePathFromPoints(graphTransformer.fromGraphSpaceToDrawSpace(targetProperty.getKeyframeValueCurve().getSegments())));
 
                 g2d.setColor(Color.BLUE);
                 //Handles
                 handles.clear();
                 for (int i = 0; i < targetProperty.getNumKeyframes(); i++) {
                     handles.add(new GeometricPrimitives(GeometricPrimitives.SQUARE).scale(0.1).translate(graphTransformer.fromGraphSpaceToDrawSpace(targetProperty.getKeyframe(i).getPoint())).getPath2D());
-                    handles.add(new GeometricPrimitives(GeometricPrimitives.SQUARE).scale(0.1).translate(graphTransformer.fromGraphSpaceToDrawSpace(targetProperty.getKeyframe(i).getHandle1())).getPath2D());
-                    handles.add(new GeometricPrimitives(GeometricPrimitives.SQUARE).scale(0.1).translate(graphTransformer.fromGraphSpaceToDrawSpace(targetProperty.getKeyframe(i).getHandle2())).getPath2D());
+                    handles.add(CurveGenerator.generateCircleFromCoords(graphTransformer.fromGraphSpaceToDrawSpace(targetProperty.getKeyframe(i).getHandle1()),5));
+                    handles.add(CurveGenerator.generateCircleFromCoords(graphTransformer.fromGraphSpaceToDrawSpace(targetProperty.getKeyframe(i).getHandle2()),5));
                 }
                 Point2D.Double point, handle1, handle2;
                 for (int i = 0; i < targetProperty.getNumKeyframes(); i++) {
@@ -294,6 +296,8 @@ public class GraphPanel extends JPanel implements OnObjectSelectedListener, OnOb
             targetProperty.recalculateCurve();
             recalculateGraphTransformer();
         }
+
+        om.notifyOnObjectUpdateListeners();
     }
 
     java.util.List<Shape> handlesBkup;
@@ -354,6 +358,7 @@ public class GraphPanel extends JPanel implements OnObjectSelectedListener, OnOb
             }
         }
         targetProperty.recalculateCurve();
+        om.notifyOnObjectUpdateListeners();
     }
 
     @Override

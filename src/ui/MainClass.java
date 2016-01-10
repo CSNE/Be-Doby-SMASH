@@ -93,7 +93,7 @@ public class MainClass extends JFrame implements ActionListener{
 		int loadTime=rGen.nextInt(1000);
 		System.out.println("LoadTime: "+loadTime);
 
-		if (!hideSplash) new SplashWindow("media/splash/splash_r3.png",1000+loadTime,this);
+		if (!hideSplash) new SplashWindow("media/splash/splash_r3.png",2000+loadTime,this);
 
 
 		logoImage = new ImageIcon("media/logo/new_r1_256px.png");
@@ -258,7 +258,7 @@ public class MainClass extends JFrame implements ActionListener{
 		lp.add(vp,JLayeredPane.DEFAULT_LAYER);
 
 
-		gp=new GraphPanel(TimeManager.getInstance());
+		gp=new GraphPanel(TimeManager.getInstance(),ObjectsManager.getInstance());
 		lp.add(gp,JLayeredPane.MODAL_LAYER);
 
 
