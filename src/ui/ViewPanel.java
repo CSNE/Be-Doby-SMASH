@@ -15,6 +15,7 @@ import java.awt.event.MouseWheelListener;
 
 import javax.swing.JPanel;
 
+import managers.ModeManager;
 import managers.ObjectsManager;
 import managers.TimeManager;
 
@@ -28,10 +29,12 @@ public class ViewPanel extends JPanel implements MouseMotionListener, MouseListe
 	double maxFPS=120.0, currentFPS;
 	boolean renderMode=false;
 	TimeManager tm;
+	ModeManager mm;
 	
-	public ViewPanel(ObjectsManager om, TimeManager tm){
+	public ViewPanel(ObjectsManager om, TimeManager tm, ModeManager mm){
 		this.om=om;
 		this.tm=tm;
+		this.mm=mm;
 		
 		addMouseMotionListener(this);
 		addMouseListener(this);
@@ -94,9 +97,17 @@ public class ViewPanel extends JPanel implements MouseMotionListener, MouseListe
 
 
 
+
 		
 		setBackground(om.getCanvasColor());
 		if (!renderMode) {
+			//Time
+			if (mm.higherThanOET(ModeManager.INTERMEDIATE)) {
+				g2d.setColor(Color.WHITE);
+				g2d.drawString(String.format("%.3f", tm.getCurrentAnimationTime()) + " Sec", 10, drawRegionY - 10);
+			}
+
+
 			//FPS counter
 			g2d.setFont(new Font("Arial", Font.PLAIN, 10));
 			g2d.setColor(new Color(255, 255, 255));

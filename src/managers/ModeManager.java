@@ -40,7 +40,7 @@ public class ModeManager {
 	public static final int EXPERT=3;
 
 	
-	int mode;
+	int mode=EXPERT;
 	List<OnModeChangeListener> omcls=new ArrayList<>();
 
 	public void addOnModeChangeListener(OnModeChangeListener omcl){

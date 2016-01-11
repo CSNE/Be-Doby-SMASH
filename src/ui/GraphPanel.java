@@ -185,10 +185,7 @@ public class GraphPanel extends JPanel implements OnObjectSelectedListener, OnOb
 
             g2d.setFont(new Font("Arial", Font.BOLD, 20));
             g2d.setColor(new Color(255, 255, 255));
-            g2d.drawString(target.getName(), 20, 60);
-            g2d.setFont(new Font("Arial", Font.PLAIN, 20));
-            g2d.setColor(new Color(255, 255, 255,180));
-            g2d.drawString(modeToString(), 20, 80);
+            g2d.drawString(target.getName()+" ["+modeToString()+"]", 70, 30);
 
 
             //FPS counter

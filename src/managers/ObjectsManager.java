@@ -174,6 +174,7 @@ public class ObjectsManager implements OnTimeUpdateListener,Serializable{
             ffTarget.centerVertices();
             ffTarget.select();
             notifyOnObjectSelectedListeners(ffTarget);
+            mode=NORMAL_EDITING;
             ffTarget = null;
             return true;
         }

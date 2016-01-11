@@ -22,13 +22,14 @@ public class ObjectPanel extends JPanel implements OnObjectSelectedListener, OnT
 	public static final String SELECTED="CARD_SELECTED";
 	public static final String NOT_SELECTED="CARD_NOT_SELECTED";
 	public static final String FREE_FORM="CARD_FREE_FORM";
+	public static final String VERTEX_EDIT="CARD_VERTEX_EDIT";
 
 	private static final String NO_PARENT_STR="[No Parent]";
 
 
 	ImageIcon graphIcon, saveIcon, deleteIcon;
 
-	JPanel selectedMenu, unselectedMenu, ffMenu;
+	JPanel selectedMenu, unselectedMenu, ffMenu, veMenu;
 	JPanel line1,line2,line3;
 	JLabel line1_object, line2_x,line2_y,line2_scaleX,line2_scaleY,line2_rotation,line2_color,line2_parent,line2_order;
 	JButton line2_x_graph,line2_y_graph,line2_scaleX_graph,line2_scaleY_graph,line2_rotation_graph;
@@ -48,6 +49,9 @@ public class ObjectPanel extends JPanel implements OnObjectSelectedListener, OnT
 
 	JLabel ff_label;
 	JButton ff_done;
+
+	JLabel ve_label;
+	JButton ve_done;
 
 	ObjectsManager om;
 	TimeManager tm;
@@ -500,6 +504,21 @@ public class ObjectPanel extends JPanel implements OnObjectSelectedListener, OnT
 
 		add(ffMenu,FREE_FORM);
 
+		veMenu=new JPanel();
+		veMenu.setLayout(new BoxLayout(veMenu,BoxLayout.Y_AXIS));
+
+		ve_label=new JLabel("Vertex Edit Mode.");
+		ve_label.setAlignmentX(0.5f);
+		veMenu.add(ve_label);
+
+		ve_done=new JButton("Done");
+		ve_done.addActionListener(this);
+		ve_done.setAlignmentX(0.5f);
+		veMenu.add(ve_done);
+
+		add(veMenu,VERTEX_EDIT);
+
+
 		updateInformation();
 	}
 
@@ -642,17 +661,19 @@ public class ObjectPanel extends JPanel implements OnObjectSelectedListener, OnT
 		}else if (e.getSource()== line2_rotation_delete){
 			selected.getKeyFramedRotation().clearKeyframes();
 		}else if (e.getSource()== line3_ive){
-			if (om.getMode()==ObjectsManager.VERTEX_EDITING){
-				om.exitIVE();
-				line3_ive.setText("Vertex Edit");
-			}
-			else if (om.getMode()==ObjectsManager.NORMAL_EDITING){
+			if (om.getMode()==ObjectsManager.NORMAL_EDITING){
 				om.enterIVE(selected);
-				line3_ive.setText("Exit Vertex Edit Mode");
+				layout.show(this,VERTEX_EDIT);
 			}else{
 				System.out.println("INVALID MODE");
 			}
-
+		}else if (e.getSource()==ve_done){
+			if (om.getMode()==ObjectsManager.VERTEX_EDITING){
+				om.exitIVE();
+				layout.show(this,SELECTED);
+			}else{
+				System.out.println("INVALID MODE");
+			}
 		}else if (e.getSource()==unselected_freeform){
 			if (om.getMode()==ObjectsManager.NOTHING_SELECTED) {
 				om.enterFreeForm();
@@ -734,6 +755,9 @@ public class ObjectPanel extends JPanel implements OnObjectSelectedListener, OnT
 		line2_color.setVisible(visibility);
 		line2_color_val.setVisible(visibility);
 	}
+	private void setCanvasColorVisibility(boolean visibility){
+		unselected_background_container.setVisible(visibility);
+	}
 	private void setParentingVisibility(boolean visibility){
 		line2_parent.setVisible(visibility);
 		line2_parent_val.setVisible(visibility);
@@ -759,6 +783,7 @@ public class ObjectPanel extends JPanel implements OnObjectSelectedListener, OnT
 		//setOrderingVisibility(false);
 		setVertexEditVisibility(false);
 		setFreeFormVisibility(false);
+		setCanvasColorVisibility(false);
 
 		if (mm.higherThanOET(ModeManager.INTERMEDIATE)){
 			setNumericValueVisibility(true);
@@ -772,6 +797,7 @@ public class ObjectPanel extends JPanel implements OnObjectSelectedListener, OnT
 		}
 		if (mm.higherThanOET(ModeManager.EXPERT)){
 			setGraphVisibility(true);
+			setCanvasColorVisibility(true);
 		}
 	}
 }

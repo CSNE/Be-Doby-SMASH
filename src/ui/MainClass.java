@@ -252,7 +252,7 @@ public class MainClass extends JFrame implements ActionListener{
 		lp.setPreferredSize(new Dimension(300,300));
 		lp.setBackground(Color.GREEN);
 
-		vp = new ViewPanel(ObjectsManager.getInstance(),TimeManager.getInstance());
+		vp = new ViewPanel(ObjectsManager.getInstance(),TimeManager.getInstance(),ModeManager.getInstance());
 		//vp.setBounds(0,0,300,300);
 
 		lp.add(vp,JLayeredPane.DEFAULT_LAYER);
