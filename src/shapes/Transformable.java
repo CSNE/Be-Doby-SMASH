@@ -84,6 +84,10 @@ public class Transformable implements Serializable{
 
 
 	public void setParent(Transformable t){
+		if (t==parent){
+			System.out.println("Transformable-setParent(): setParent Called but the target is the same! Ignoring.");
+			return;
+		}
 		if (hasParent) {
 			System.out.println("Transformable-setParent(): setParent Called but already has parent! Clearing Parent.");
 			clearParent();

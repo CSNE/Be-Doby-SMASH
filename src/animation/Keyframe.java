@@ -7,6 +7,9 @@ import java.io.Serializable;
  * Created by Chan on 1/5/2016.
  */
 public class Keyframe implements Comparable<Keyframe>, Serializable{
+
+    private static final long serialVersionUID = 1L;
+
     private double time,value,handle1T,handle1V,handle2T,handle2V;
 
     private boolean handlesActivation=true;

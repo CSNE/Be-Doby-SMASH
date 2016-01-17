@@ -4,6 +4,7 @@ import java.util.*;
 
 
 public class InterpolatableProperty implements Serializable{
+
 	/**
 	 * 
 	 */

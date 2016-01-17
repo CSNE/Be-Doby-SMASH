@@ -10,6 +10,9 @@ import java.util.List;
  * Created by Chan on 1/6/2016.
  */
 public class KeyframedValueCurve implements Serializable{
+
+    static final long serialVersionUID = 1L;
+
     ArrayList<Keyframe> keyframes;
     ArrayList<Point2D.Double> segments=new ArrayList<>();
     int iterations=100;
@@ -28,13 +31,13 @@ public class KeyframedValueCurve implements Serializable{
         for (int i = 0; i < keyframes.size()-1; i++) {
             next=keyframes.get(i+1);
             prev=keyframes.get(i);
-            solveBezier(prev.getPoint(),prev.getHandle2(),next.getHandle1(),next.getPoint(),segments);
+            solveBezier(prev.getPoint(),prev.getHandle2(),next.getHandle1(),next.getPoint(),segments,i==(keyframes.size()-1));
             //TODO the last point is not appended. fix that.
         }
     }
-    public void solveBezier(Point2D.Double p1,Point2D.Double p2,Point2D.Double p3,Point2D.Double p4,List<Point2D.Double> appendTo){
+    private void solveBezier(Point2D.Double p1,Point2D.Double p2,Point2D.Double p3,Point2D.Double p4,List<Point2D.Double> appendTo, boolean appendLast){
         double x,y,t;
-        for (int i = 0; i < iterations; i++) {
+        for (int i = 0; i < (appendLast?iterations:(iterations+1)); i++) {
             t=i/(double)iterations;
             x=p1.getX()*(1-t)*(1-t)*(1-t)
               +p2.getX()*3*(1-t)*(1-t)*t
