@@ -8,11 +8,11 @@ public class InterpolatableProperty implements Serializable{
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 2L;
 
 	double currentVal, defaultVal;
 
-	private ArrayList<Keyframe> keyframes=new ArrayList<>();
+	//private ArrayList<Keyframe> keyframes=new ArrayList<>();
 	transient int i;
     private KeyframedValueCurve curve;
 
@@ -20,27 +20,25 @@ public class InterpolatableProperty implements Serializable{
 	public InterpolatableProperty(double v){
 		this.defaultVal=v;
 		this.currentVal=v;
-        curve=new KeyframedValueCurve(keyframes);
-
+        curve=new KeyframedValueCurve();
 	}
 	public InterpolatableProperty(InterpolatableProperty p){
 		this.currentVal = p.currentVal;
 		this.defaultVal=p.defaultVal;
-		this.keyframes = new ArrayList<Keyframe>(p.keyframes);
 		this.curve=new KeyframedValueCurve(p.curve);
 	}
+
 	/* @Deprecated
 		You shouldn't take the array like this.
 	 */
 	@Deprecated
 	public List<Keyframe> getKeyframes() {
-		return keyframes;
+		return curve.getKeyframes();
 	}
 	public void addKeyframe(Keyframe kf){
-		keyframes.add(kf);
+		curve.getKeyframes().add(kf);
 		sortKeyframesByTime();
         recalculateCurve();
-
 	}
 	public void addKeyframe(double time){
 		addKeyframe(new Keyframe(time,currentVal));
@@ -51,13 +49,13 @@ public class InterpolatableProperty implements Serializable{
         curve.recalculate();
     }
 	private void sortKeyframesByTime(){
-		Collections.sort(keyframes);
+		Collections.sort(curve.getKeyframes());
 	}
     public Keyframe getKeyframe(int i){
-        return keyframes.get(i);
+        return curve.getKeyframes().get(i);
     }
     public int getNumKeyframes(){
-        return keyframes.size();
+        return curve.getKeyframes().size();
     }
 
 	public void setTime(double time){
@@ -76,7 +74,7 @@ public class InterpolatableProperty implements Serializable{
 	}
 
 	public void clear(){
-		this.keyframes.clear();
+		this.curve.getKeyframes().clear();
 	}
 
     public KeyframedValueCurve getKeyframeValueCurve(){
@@ -84,23 +82,23 @@ public class InterpolatableProperty implements Serializable{
     }
 
 	public void clearKeyframes(){
-		this.keyframes.clear();
+		this.curve.getKeyframes().clear();
 		recalculateCurve();
 	}
 	public void deleteNear(double time){
 		Keyframe target=null;
 		double minTime=100000;
 
-		for (int j = 0; j < keyframes.size(); j++) {
-			if(Math.abs(time-keyframes.get(j).getTime())<minTime){
-				minTime=Math.abs(time-keyframes.get(j).getTime());
-				target=keyframes.get(j);
+		for (int j = 0; j < curve.getKeyframes().size(); j++) {
+			if(Math.abs(time-curve.getKeyframes().get(j).getTime())<minTime){
+				minTime=Math.abs(time-curve.getKeyframes().get(j).getTime());
+				target=curve.getKeyframes().get(j);
 			}
 		}
 		if (target==null){
 			System.out.println("Keyframe Deletion Failed.");
 		}else{
-			keyframes.remove(target);
+			curve.getKeyframes().remove(target);
 			recalculateCurve();
 		}
 	}

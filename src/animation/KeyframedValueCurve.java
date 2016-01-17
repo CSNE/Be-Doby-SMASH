@@ -11,14 +11,16 @@ import java.util.List;
  */
 public class KeyframedValueCurve implements Serializable{
 
-    static final long serialVersionUID = 1L;
+    static final long serialVersionUID = 2L;
 
-    ArrayList<Keyframe> keyframes;
+    ArrayList<Keyframe> keyframes=new ArrayList<>();
     ArrayList<Point2D.Double> segments=new ArrayList<>();
     int iterations=100;
-    public KeyframedValueCurve(ArrayList<Keyframe> keyframes){
-        this.keyframes=keyframes;
+    public KeyframedValueCurve(){
         recalculate();
+    }
+    public ArrayList<Keyframe> getKeyframes(){
+        return this.keyframes;
     }
     public KeyframedValueCurve(KeyframedValueCurve kvc){
         this.keyframes=new ArrayList<>(kvc.keyframes);
@@ -32,7 +34,7 @@ public class KeyframedValueCurve implements Serializable{
             next=keyframes.get(i+1);
             prev=keyframes.get(i);
             solveBezier(prev.getPoint(),prev.getHandle2(),next.getHandle1(),next.getPoint(),segments,i==(keyframes.size()-1));
-            //TODO the last point is not appended. fix that.
+
         }
     }
     private void solveBezier(Point2D.Double p1,Point2D.Double p2,Point2D.Double p3,Point2D.Double p4,List<Point2D.Double> appendTo, boolean appendLast){
