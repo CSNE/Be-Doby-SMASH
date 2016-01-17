@@ -65,6 +65,11 @@ public class GraphTransformer {
             if (dataY.get(i)>maxY) maxY=dataY.get(i);
             if (dataY.get(i)<minY) minY=dataY.get(i);
         }
+        if (Math.abs(maxY-minY)<0.5){
+            double avg=(maxY+minY)/2.0;
+            maxY=avg+0.25;
+            minY=avg-0.25;
+        }
     }
 
     public double fromGraphSpaceXToDrawSpaceX(double x){

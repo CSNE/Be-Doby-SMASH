@@ -651,15 +651,15 @@ public class ObjectPanel extends JPanel implements OnObjectSelectedListener, OnT
 		}else if (e.getSource()== line2_rotation_save){
 			selected.getKeyFramedRotation().addKeyframe(tm.getCurrentAnimationTime());
 		}else if (e.getSource()== line2_x_delete){
-			selected.getKeyFramedX().clearKeyframes();
+			selected.getKeyFramedX().deleteNear(tm.getCurrentAnimationTime());
 		}else if (e.getSource()== line2_y_delete){
-			selected.getKeyFramedY().clearKeyframes();
+			selected.getKeyFramedY().deleteNear(tm.getCurrentAnimationTime());
 		}else if (e.getSource()== line2_scaleX_delete){
-			selected.getKeyFramedScaleX().clearKeyframes();
+			selected.getKeyFramedScaleX().deleteNear(tm.getCurrentAnimationTime());
 		}else if (e.getSource()== line2_scaleY_delete){
-			selected.getKeyFramedScaleY().clearKeyframes();
+			selected.getKeyFramedScaleY().deleteNear(tm.getCurrentAnimationTime());
 		}else if (e.getSource()== line2_rotation_delete){
-			selected.getKeyFramedRotation().clearKeyframes();
+			selected.getKeyFramedRotation().deleteNear(tm.getCurrentAnimationTime());
 		}else if (e.getSource()== line3_ive){
 			if (om.getMode()==ObjectsManager.NORMAL_EDITING){
 				om.enterIVE(selected);

@@ -5,6 +5,7 @@ import helpers.CurveGenerator;
 import interfaces.OnObjectSelectedListener;
 import interfaces.OnObjectUpdateListener;
 import helpers.GeometricPrimitives;
+import managers.ModeManager;
 import managers.ObjectsManager;
 import managers.TimeManager;
 import shapes.TransformableShape;
@@ -262,6 +263,14 @@ public class GraphPanel extends JPanel implements OnObjectSelectedListener, OnOb
     @Override
     public void mouseClicked(MouseEvent e) {
 
+
+        if (!active){
+            System.out.println("GraphEditor should be inactive but it intercepted a mouse event!");
+            deactivate();
+            deactivate();
+            deactivate();
+            //TODO lolwut
+        }
         if (lastClickPoint!=null){
             if (e.getY()==lastClickPoint.getY() && e.getX()==lastClickPoint.getX()){
                 if (System.currentTimeMillis()-lastClickTime<100){

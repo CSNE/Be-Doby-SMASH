@@ -43,6 +43,8 @@ public class InterpolatableProperty implements Serializable{
 	}
 	public void addKeyframe(double time){
 		addKeyframe(new Keyframe(time,currentVal));
+		sortKeyframesByTime();
+		recalculateCurve();
 	}
     public void recalculateCurve(){
         curve.recalculate();
@@ -83,5 +85,22 @@ public class InterpolatableProperty implements Serializable{
 	public void clearKeyframes(){
 		this.keyframes.clear();
 		recalculateCurve();
+	}
+	public void deleteNear(double time){
+		Keyframe target=null;
+		double minTime=100000;
+
+		for (int j = 0; j < keyframes.size(); j++) {
+			if(Math.abs(time-keyframes.get(j).getTime())<minTime){
+				minTime=Math.abs(time-keyframes.get(j).getTime());
+				target=keyframes.get(j);
+			}
+		}
+		if (target==null){
+			System.out.println("Keyframe Deletion Failed.");
+		}else{
+			keyframes.remove(target);
+			recalculateCurve();
+		}
 	}
 }

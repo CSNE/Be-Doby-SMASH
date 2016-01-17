@@ -237,7 +237,7 @@ public class MainClass extends JFrame implements ActionListener{
 		topBar.add(menuTop_Mode);
 		topBar.add(menuTop_Animation);
 		//topBar.add(menuTop_View);
-		topBar.add(menuTop_Help);
+		//topBar.add(menuTop_Help);
 
 		setJMenuBar(topBar);
 
