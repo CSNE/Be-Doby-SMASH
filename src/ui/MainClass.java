@@ -375,7 +375,7 @@ public class MainClass extends JFrame implements ActionListener{
 
 		String ffmpeg="\""+System.getProperty("user.dir")+"/media/ffmpeg"+"\"";
 		String images="\""+System.getProperty("user.dir")+"/media/renders/%04d.png"+"\"";
-		String out=file.getAbsolutePath();
+		String out="\""+file.getAbsolutePath()+"\"";
 		String command="cmd /c start \"Movie Export (ffmpeg)\" "+ffmpeg+" -framerate "+framerate+" -i "+images+" -c:v libx264 -pix_fmt yuv420p "+out;
 		//String command="ping www.google.com";
 		//String command=ffmpeg+" -h";
