@@ -2,39 +2,17 @@ package ui;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.io.*;
-import java.nio.file.Paths;
 import java.util.Random;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
-import animation.Keyframe;
 import managers.ModeManager;
 import managers.ObjectsManager;
 import managers.TimeManager;
-import shapes.TransformableShape;
 
-
-
-
-
-/*
- * TODO
- * 
- * Export to image
- * Graph Editor
- * Parenting Bug Fix
- * Move Anchor Bug Fix
- * int timing to float timings
- * Restructure UI
- * Object Properties Panel
- * 
- */
 
 public class MainClass extends JFrame implements ActionListener{
 
@@ -53,7 +31,7 @@ public class MainClass extends JFrame implements ActionListener{
 
 	JMenuBar topBar;
 	JMenu menuTop_File,menuTop_Animation,menuTop_View,menuTop_Help,menuTop_Mode;
-	JMenuItem[] menu_File=new JMenuItem[6];
+	JMenuItem[] menu_File=new JMenuItem[8];
 	JMenuItem[] menu_Animation=new JMenuItem[5];
 	JMenuItem[] menu_Help=new JMenuItem[5];
 	JMenuItem[] menu_View=new JMenuItem[6];
@@ -93,8 +71,7 @@ public class MainClass extends JFrame implements ActionListener{
 		int loadTime=rGen.nextInt(1000);
 		System.out.println("LoadTime: "+loadTime);
 
-		if (!hideSplash) new SplashWindow("media/splash/splash_r3.png",2000+loadTime,this);
-
+		if (!hideSplash) new SplashWindow("media/splash/splash_r4.png",2000+loadTime,this);
 
 		logoImage = new ImageIcon("media/logo/new_r1_256px.png");
 
@@ -131,6 +108,16 @@ public class MainClass extends JFrame implements ActionListener{
 		menu_File[5].setToolTipText("Export to a playable movie.");
 		menu_File[5].addActionListener(this);
 		menuTop_File.add(menu_File[5]);
+
+		menu_File[6] = new JMenuItem("Export .GIF");
+		menu_File[6].setToolTipText("Export to a playable GIF.");
+		menu_File[6].addActionListener(this);
+		menuTop_File.add(menu_File[6]);
+
+		menu_File[7] = new JMenuItem("Export .GIF (For PowerPoint)");
+		menu_File[7].setToolTipText("Export to a playable GIF (16FPS).");
+		menu_File[7].addActionListener(this);
+		menuTop_File.add(menu_File[7]);
 
 		menu_File[2] = new JMenuItem("Exit");
 		menu_File[2].setToolTipText("Exit Be Doby SMASH");
@@ -280,7 +267,7 @@ public class MainClass extends JFrame implements ActionListener{
 
 
 		//Misc window setup
-		setTitle("Be Doby SMASH CS8+");
+		setTitle("SMAnimator!");
 		setSize(windowX,windowY);
 		setLocation(screenX/2-windowX/2,screenY/2-windowY/2);
 		setVisible(true);
@@ -337,7 +324,6 @@ public class MainClass extends JFrame implements ActionListener{
 	}
 
 	public BufferedImage getScreenShot(Component component) {
-
 		BufferedImage image = new BufferedImage(
 				component.getWidth(),
 				component.getHeight(),
@@ -359,8 +345,9 @@ public class MainClass extends JFrame implements ActionListener{
 
 	public void savePNGSequence(double end, double framerate){
 		//TODO Render files cleaning
-		//for(File file: new File("media/renders").listFiles()) file.delete();
-
+		for(File file: new File("media/renders/").listFiles()){
+			file.delete();
+		}
 		om.deselectAll();
 		String frameIdentifier;
 		for (int i = 0; i*(1/framerate) <= end; i++) {
@@ -371,12 +358,25 @@ public class MainClass extends JFrame implements ActionListener{
 		}
 	}
 
-	public void saveMP4(File file, int framerate) throws IOException, InterruptedException {
+	public void convertMP4(File file, int framerate) throws IOException, InterruptedException {
 
 		String ffmpeg="\""+System.getProperty("user.dir")+"/media/ffmpeg"+"\"";
 		String images="\""+System.getProperty("user.dir")+"/media/renders/%04d.png"+"\"";
 		String out="\""+file.getAbsolutePath()+"\"";
 		String command="cmd /c start \"Movie Export (ffmpeg)\" "+ffmpeg+" -framerate "+framerate+" -i "+images+" -c:v libx264 -pix_fmt yuv420p "+out;
+		//String command="ping www.google.com";
+		//String command=ffmpeg+" -h";
+
+		System.out.println(command);
+		Runtime.getRuntime().exec(command);
+	}
+
+	public void convertGIF(File file, int framerate) throws IOException, InterruptedException {
+
+		String ffmpeg="\""+System.getProperty("user.dir")+"/media/ffmpeg"+"\"";
+		String images="\""+System.getProperty("user.dir")+"/media/renders/%04d.png"+"\"";
+		String out="\""+file.getAbsolutePath()+"\"";
+		String command="cmd /c start \"Movie Export (ffmpeg)\" "+ffmpeg+" -framerate "+framerate+" -i "+images+" -gifflags -transdiff "+out;
 		//String command="ping www.google.com";
 		//String command=ffmpeg+" -h";
 
@@ -405,18 +405,27 @@ public class MainClass extends JFrame implements ActionListener{
 		}
 	}
 
-	public void exportMovie(){
+	public static final int MP4=51;
+	public static final int GIF=75;
+	public static final int GIF_16FPS =52;
+	public void exportMovie(int mode){
 		JFileChooser fileChooser = new JFileChooser();
 		fileChooser.setCurrentDirectory(new File("media/exported/"));
-		fileChooser.setSelectedFile(new File("Untitled.mp4"));
-		fileChooser.setDialogTitle("Export MP4 Movie");
+		if (mode==GIF || mode== GIF_16FPS) {
+			fileChooser.setSelectedFile(new File("Untitled.gif"));
+			fileChooser.setDialogTitle("Export GIF Movie");
+		}else if (mode==MP4) {
+			fileChooser.setSelectedFile(new File("Untitled.mp4"));
+			fileChooser.setDialogTitle("Export MP4 Movie");
+		}
 		fileChooser.setApproveButtonText("Export");
 		int result = fileChooser.showSaveDialog(this);
 		if (result == JFileChooser.APPROVE_OPTION) {
 			File selectedFile = fileChooser.getSelectedFile();
 			String file_name = selectedFile.toString();
 
-			if (!file_name.endsWith(".mp4")) file_name += ".mp4";
+			if (mode==MP4 && !file_name.endsWith(".mp4")) file_name += ".mp4";
+			if ((mode==GIF || mode== GIF_16FPS) && !file_name.endsWith(".gif")) file_name += ".gif";
 			selectedFile = new File(file_name);
 
 			System.out.println("Selected file: " + selectedFile.getAbsolutePath());
@@ -424,9 +433,12 @@ public class MainClass extends JFrame implements ActionListener{
 			try {
 				JOptionPane.showMessageDialog(null, "This may take a while.");
 				vp.enterRenderMode();
-				savePNGSequence(tm.getAnimationLength(),30);
+				if (mode==MP4 || mode==GIF) savePNGSequence(tm.getAnimationLength(),30);
+				else if (mode== GIF_16FPS) savePNGSequence(tm.getAnimationLength(),16);
 				vp.exitRenderMode();
-				saveMP4(selectedFile,30);
+				if (mode==MP4)convertMP4(selectedFile,30);
+				else if (mode==GIF) convertGIF(selectedFile,30);
+				else if (mode== GIF_16FPS) convertGIF(selectedFile,16);
 			} catch (Exception e1) {
 				e1.printStackTrace();
 			}
@@ -514,7 +526,11 @@ public class MainClass extends JFrame implements ActionListener{
 
 		}
 		else if (e.getSource().equals(menu_File[5])){
-			exportMovie();
+			exportMovie(MP4);
+		}else if (e.getSource().equals(menu_File[6])){
+			exportMovie(GIF);
+		}else if (e.getSource().equals(menu_File[7])){
+			exportMovie(GIF_16FPS);
 		}
 		else if (e.getSource().equals(menu_Animation[2])){
 			String s = (String)JOptionPane.showInputDialog(

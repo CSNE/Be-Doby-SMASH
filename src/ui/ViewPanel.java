@@ -60,6 +60,7 @@ public class ViewPanel extends JPanel implements MouseMotionListener, MouseListe
 				RenderingHints.VALUE_ANTIALIAS_ON);
 		g2d.setRenderingHints(rh);
 
+		//if (!renderMode)
 		super.paintComponent(g2d);
 
 		g2d.setFont(new Font("Arial", Font.PLAIN, 20));
@@ -96,9 +97,8 @@ public class ViewPanel extends JPanel implements MouseMotionListener, MouseListe
 		}
 
 
+		//if (renderMode) setBackground(new Color(0,0,0,0));
 
-
-		
 		setBackground(om.getCanvasColor());
 		if (!renderMode) {
 			//Time
