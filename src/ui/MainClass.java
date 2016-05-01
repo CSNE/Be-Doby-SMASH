@@ -9,6 +9,7 @@ import java.util.Random;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
+import helpers.ClipboardHelper;
 import managers.ModeManager;
 import managers.ObjectsManager;
 import managers.TimeManager;
@@ -16,7 +17,7 @@ import managers.TimeManager;
 
 public class MainClass extends JFrame implements ActionListener{
 
-	boolean hideSplash=false;
+	boolean hideSplash=true;
 
 	ViewPanel vp;
 	JLayeredPane lp;
@@ -58,6 +59,8 @@ public class MainClass extends JFrame implements ActionListener{
 
 
 	public MainClass(){
+
+		ClipboardHelper.placeFileToClipboard("D:/asdf.txt");
 
 
 
@@ -363,7 +366,7 @@ public class MainClass extends JFrame implements ActionListener{
 		String ffmpeg="\""+System.getProperty("user.dir")+"/media/ffmpeg"+"\"";
 		String images="\""+System.getProperty("user.dir")+"/media/renders/%04d.png"+"\"";
 		String out="\""+file.getAbsolutePath()+"\"";
-		String command="cmd /c start \"Movie Export (ffmpeg)\" "+ffmpeg+" -framerate "+framerate+" -i "+images+" -c:v libx264 -pix_fmt yuv420p "+out;
+		String command="cmd /c start /wait \"Movie Export (ffmpeg)\" "+ffmpeg+" -framerate "+framerate+" -i "+images+" -c:v libx264 -pix_fmt yuv420p "+out;
 		//String command="ping www.google.com";
 		//String command=ffmpeg+" -h";
 
@@ -376,12 +379,26 @@ public class MainClass extends JFrame implements ActionListener{
 		String ffmpeg="\""+System.getProperty("user.dir")+"/media/ffmpeg"+"\"";
 		String images="\""+System.getProperty("user.dir")+"/media/renders/%04d.png"+"\"";
 		String out="\""+file.getAbsolutePath()+"\"";
-		String command="cmd /c start \"Movie Export (ffmpeg)\" "+ffmpeg+" -framerate "+framerate+" -i "+images+" -gifflags -transdiff "+out;
+		String command="cmd /c start /wait \"Movie Export (ffmpeg)\" "+ffmpeg+" -framerate "+framerate+" -i "+images+" -gifflags -transdiff "+out+" -y";
 		//String command="ping www.google.com";
 		//String command=ffmpeg+" -h";
 
 		System.out.println(command);
-		Runtime.getRuntime().exec(command);
+		Process p=Runtime.getRuntime().exec(command);
+		p.waitFor();
+
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					Thread.sleep(500);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				ClipboardHelper.placeFileToClipboard(file.getAbsolutePath());
+			}
+		}).start();
+
 	}
 
 	public void exportImage(){
@@ -439,6 +456,8 @@ public class MainClass extends JFrame implements ActionListener{
 				if (mode==MP4)convertMP4(selectedFile,30);
 				else if (mode==GIF) convertGIF(selectedFile,30);
 				else if (mode== GIF_16FPS) convertGIF(selectedFile,16);
+
+
 			} catch (Exception e1) {
 				e1.printStackTrace();
 			}

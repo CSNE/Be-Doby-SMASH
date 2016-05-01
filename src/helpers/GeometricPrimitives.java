@@ -38,10 +38,6 @@ public class GeometricPrimitives {
         tm=TransformationMatrix.rotationMatrix(degrees).multiplyMatrix(tm);
         return this;
     }
-    public GeometricPrimitives appendMatrix(TransformationMatrix matrix){
-        tm=matrix.multiplyMatrix(tm);
-        return this;
-    }
     public Path2D.Double getPath2D(){
         Point2D.Double[] points;
         int nPoints;

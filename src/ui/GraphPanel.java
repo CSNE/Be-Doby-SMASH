@@ -35,7 +35,7 @@ public class GraphPanel extends JPanel implements OnObjectSelectedListener, OnOb
     private long lastDrawn;
     private int drawRegionX, drawRegionY;
 
-    private double maxFPS = 120.0, currentFPS;
+    private double maxFPS = 60.0, currentFPS;
     private boolean active = false;
 
     private final double closeBtnSize=50;

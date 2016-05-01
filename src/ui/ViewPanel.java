@@ -26,7 +26,7 @@ public class ViewPanel extends JPanel implements MouseMotionListener, MouseListe
 	int drawRegionX,drawRegionY;
 	private ObjectsManager om;
 	int offsetX=0,offsetY=0;
-	double maxFPS=120.0, currentFPS;
+	double maxFPS=60.0, currentFPS;
 	boolean renderMode=false;
 	TimeManager tm;
 	ModeManager mm;
